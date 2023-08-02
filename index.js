@@ -1,6 +1,11 @@
 const inquirer = require('inquirer');
-const chalk = require('chalk');
-const fs = require('fs-extra');
+const { readFile, writeFile } = require('fs').promises;
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
 const generateSVG = (text, textColor, shape, shapeColor) => {
   const svgTemplate = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200">
@@ -40,11 +45,13 @@ const createLogoSVG = async () => {
     const { text, textColor, shape, shapeColor } = userInput;
 
     const svgContent = generateSVG(text, textColor, shape, shapeColor);
-    await fs.writeFile('logo.svg', svgContent);
+    await writeFile('logo.svg', svgContent);
 
-    console.log(chalk.green('Generated logo.svg'));
+    console.log('Generated logo.svg');
   } catch (error) {
-    console.error(chalk.red('An error occurred:', error.message));
+    console.error('An error occurred:', error.message);
+  } finally {
+    rl.close();
   }
 };
 
